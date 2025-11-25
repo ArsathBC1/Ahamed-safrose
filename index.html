@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Gift Surprise Watch - Happy Birthday!</title>
+
+<!-- Poppins font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg-gradient: radial-gradient(circle at top, #111827, #020617 60%);
+  --accent-blue: #38bdf8;
+  --accent-red: #f97373;
+  --accent-gold: #facc15;
+  --text-main: #f9fafb;
+  --text-soft: #9ca3af;
+}
+
+/* ---------- PAGE LAYOUT ---------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg-gradient);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: hidden;
+  color: var(--text-main);
+}
+
+.hidden { display: none; }
+
+.app-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  padding: 16px;
+}
+
+/* ---------- HINT TEXT ---------- */
+.hint {
+  text-align: center;
+  margin-top: 16px;
+  color: var(--text-soft);
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+.hint span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.6);
+}
+.hint-emoji {
+  font-size: 1rem;
+}
+
+/* ---------- 3D GIFT BOX ---------- */
+
+.gift-box-container {
+  width: 200px;
+  height: 200px;
+  perspective: 450px;
+  cursor: pointer;
+  position: relative;
+  margin: 0 auto;
+}
+
+/* blast when finished */
+.gift-box-container.blast {
+  animation: box-blast 0.9s ease-out forwards;
+}
+@keyframes box-blast {
+  0%   { transform: scale(1);   opacity: 1; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+
+.gift-box {
+  --gift-box-color: #e63946;
+  --gift-box-edge-color: #590b11;
+  --wrap-color: #f1faee;
+  --wrap-ribbon-color: #c0e4e6;
+  --wrap-top-color: #d8efef;
+
+  width: 200px;
+  height: 200px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 1s;
+  transform: translateZ(-100px) rotateY(50deg) rotateX(-5deg) rotateZ(-30deg);
+}
+
+.gift-box .gift-box__side,
+.gift-box .gift-box__end {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border: 2px solid var(--gift-box-edge-color);
+}
+
+.gift-box .gift-box-lid__side {
+  position: absolute;
+  width: 220px;
+  height: 50px;
+  border: 2px solid var(--gift-box-edge-color);
+}
+
+.gift-box .gift-box-lid__end {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border: 2px solid var(--gift-box-edge-color);
+}
+
+/* lid transitions */
+.gift-box .gift-box-lid__side,
+.gift-box .gift-box-lid__end {
+  transition: transform 0.7s;
+}
+
+/* color / wrap */
+.gift-box .gift-box__side,
+.gift-box .gift-box-lid__side {
+  background: linear-gradient(to right,
+    var(--gift-box-color) 40%,
+    var(--wrap-color) 40%,
+    var(--wrap-color) 60%,
+    var(--gift-box-color) 60%);
+}
+.gift-box .gift-box__end,
+.gift-box .gift-box-lid__end {
+  background: linear-gradient(to right,
+    transparent 40%,
+    var(--wrap-top-color) 40%,
+    var(--wrap-top-color) 60%,
+    transparent 60%),
+  linear-gradient(to bottom,
+    var(--gift-box-color) 40%,
+    var(--wrap-color) 40%,
+    var(--wrap-color) 60%,
+    var(--gift-box-color) 60%);
+}
+
+/* box faces */
+.gift-box .gift-box__side--front  { transform: rotateY(0deg)   translateZ(100px); }
+.gift-box .gift-box__side--back   { transform: rotateY(180deg) translateZ(100px); }
+.gift-box .gift-box__side--left   { transform: rotateY(-90deg) translateZ(100px); }
+.gift-box .gift-box__side--right  { transform: rotateY(90deg)  translateZ(100px); }
+.gift-box .gift-box__side--top    { transform: rotateX(90deg)  translateZ(100px); }
+.gift-box .gift-box__side--bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+/* lid faces (closed) */
+.gift-box .gift-box-lid__side--front {
+  transform: rotateY(0deg) translateZ(110px) translateX(-10px) translateY(-10px);
+}
+.gift-box .gift-box-lid__side--back  {
+  transform: rotateY(180deg) translateZ(110px) translateX(10px) translateY(-10px);
+}
+.gift-box .gift-box-lid__side--left  {
+  transform: rotateY(-90deg) translateZ(120px) translateY(-10px);
+}
+.gift-box .gift-box-lid__side--right {
+  transform: rotateY(90deg) translateZ(100px) translateY(-10px);
+}
+.gift-box .gift-box-lid__side--top   {
+  transform: rotateX(90deg) translateZ(120px) translateX(-10px) translateY(0);
+}
+
+/* lid open (dramatic up) */
+.gift-box-container.open .gift-box .gift-box-lid__side--front {
+  transform: rotateY(0deg) translateZ(110px) translateX(-10px) translateY(-80px);
+}
+.gift-box-container.open .gift-box .gift-box-lid__side--back {
+  transform: rotateY(180deg) translateZ(110px) translateX(10px) translateY(-80px);
+}
+.gift-box-container.open .gift-box .gift-box-lid__side--left {
+  transform: rotateY(-90deg) translateZ(120px) translateY(-80px);
+}
+.gift-box-container.open .gift-box .gift-box-lid__side--right {
+  transform: rotateY(90deg) translateZ(100px) translateY(-80px);
+}
+.gift-box-container.open .gift-box .gift-box-lid__side--top {
+  transform: rotateX(90deg) translateZ(180px) translateX(-10px) translateY(0);
+}
+
+/* ribbons around */
+.gift-box .ribbon-l,
+.gift-box .ribbon-r {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border: 2px solid var(--wrap-ribbon-color);
+  border-radius: 50% 50% 0 50%;
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+}
+
+.gift-box .ribbon-l {
+  transform: rotateX(75deg) rotateY(90deg)
+             translateZ(calc(80px - var(--gift-box-position)))
+             translateX(-85px) translateY(-75px) skewY(30deg);
+}
+
+.gift-box .ribbon-r {
+  transform: rotateX(-5deg) rotateY(90deg)
+             translateZ(calc(80px - var(--gift-box-position)))
+             translateX(-30px) translateY(-110px) skewY(30deg);
+}
+
+.ribbon-l-end,
+.ribbon-r-end {
+  position: absolute;
+  width: 40px;
+  height: 110px;
+  background:
+    linear-gradient(45deg, var(--wrap-top-color) 72%, transparent 72%),
+    linear-gradient(-45deg, var(--wrap-top-color) 72%, transparent 72%);
+  border: 2px solid var(--gift-box-edge-color);
+  border-top: none;
+  border-bottom: none;
+}
+.ribbon-l-end {
+  transform: rotateX(-70deg) translateX(80px) translateY(-80px) translateZ(-60px);
+}
+.ribbon-r-end {
+  transform: rotateX(80deg) translateX(80px) translateY(-80px) translateZ(60px);
+}
+
+/* spin 3 times in 5s */
+@keyframes rotation-3d-3times {
+  from {
+    transform: translateZ(-100px) rotateY(50deg) rotateX(-5deg) rotateZ(-30deg);
+  }
+  to {
+    transform: translateZ(-100px) rotateY(-1030deg) rotateX(-5deg) rotateZ(-30deg);
+  }
+}
+.gift-box-container.spin .gift-box {
+  animation: rotation-3d-3times 5s ease-in-out;
+}
+
+/* ---------- CONFETTI ---------- */
+.confetti-layer {
+  position: absolute;
+  inset: -20px;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 18px;
+  border-radius: 3px;
+  opacity: 0;
+  animation: confettiFall 2.8s linear forwards;
+}
+@keyframes confettiFall {
+  0%   { transform: translate3d(0, -120%, 0) rotateZ(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translate3d(0, 120vh, 0) rotateZ(360deg); opacity: 0; }
+}
+
+/* ---------- BIRTHDAY MESSAGE ---------- */
+.gift-message {
+  margin-top: 18px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: linear-gradient(135deg,
+    rgba(56, 189, 248, 0.16),
+    rgba(37, 99, 235, 0.16));
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  text-align: center;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.gift-message.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.gift-message-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--accent-gold);
+  margin-bottom: 4px;
+}
+.gift-message-text {
+  font-size: 0.78rem;
+  color: var(--text-soft);
+}
+.friend-name {
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+
+/* ---------- CLOCK SECTION ---------- */
+.clock-section {
+  margin-top: 30px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(24px) scale(0.96);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.clock-section.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.clock-title {
+  color: #f1faee;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+/* watch */
+.watch-shell {
+  position: relative;
+  width: min(80vw, 260px);
+  height: min(80vw, 260px);
+  border-radius: 50%;
+  margin: 0 auto;
+  background: radial-gradient(circle at 30% 10%, #111827, #020617 75%);
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.9),
+    0 0 0 2px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.watch-inner {
+  position: relative;
+  width: 88%;
+  height: 88%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 20% 20%, #111, #000 80%);
+  box-shadow:
+    inset 0 0 18px rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(148, 163, 184, 0.5);
+}
+
+/* markers */
+.marker {
+  position: absolute;
+  width: 6px;
+  height: 16px;
+  border-radius: 4px;
+  background: #e5e7eb;
+  top: 5%;
+  left: 50%;
+  transform-origin: center calc(100% + 55%);
+  transform: translateX(-50%);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.75);
+}
+
+/* numbers */
+.number {
+  position: absolute;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+/* hands */
+.hand {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+  transform: translateX(-50%) rotate(0deg);
+  border-radius: 999px;
+}
+.hand-hour {
+  width: 7px;
+  height: 26%;
+  background: linear-gradient(180deg, #f9fafb, #9ca3af);
+  box-shadow: 0 0 10px rgba(148, 163, 184, 0.8);
+}
+.hand-minute {
+  width: 5px;
+  height: 34%;
+  background: linear-gradient(180deg, #f9fafb, #9ca3af);
+  box-shadow: 0 0 10px rgba(148, 163, 184, 0.8);
+}
+.hand-second {
+  width: 2.4px;
+  height: 38%;
+  background: var(--accent-red);
+  box-shadow: 0 0 8px rgba(248, 113, 113, 0.9);
+}
+.hand-second::after {
+  content: "";
+  position: absolute;
+  bottom: -14%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 14%;
+  border-radius: 999px;
+  background: var(--accent-red);
+}
+
+/* center */
+.watch-center {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #e5e7eb, #6b7280);
+  box-shadow:
+    0 0 6px rgba(249, 250, 251, 0.9),
+    0 0 0 2px rgba(0, 0, 0, 0.95);
+}
+
+/* digital time */
+.digital-time {
+  margin-top: 12px;
+  font-size: 1.1rem;
+  letter-spacing: 0.18em;
+  color: #f1faee;
+}
+.digital-sub {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: #a8dadc;
+  text-transform: uppercase;
+}
+
+/* replay / video buttons */
+.action-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.action-btn {
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.action-btn:hover {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.7);
+}
+.btn-replay {
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+}
+.btn-video {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+}
+
+/* ---------- VIDEO MODAL ---------- */
+.video-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.video-modal.hidden {
+  display: none;
+}
+.video-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(8px);
+}
+.video-modal-content {
+  position: relative;
+  width: 90%;
+  max-width: 800px;
+  z-index: 1001;
+  animation: modalSlideUp 0.5s ease;
+}
+@keyframes modalSlideUp {
+  from { transform: translateY(40px) scale(0.95); opacity: 0; }
+  to   { transform: translateY(0) scale(1);   opacity: 1; }
+}
+.close-video-btn {
+  position: absolute;
+  top: -45px;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 1002;
+}
+.close-video-btn:hover {
+  background: rgba(220, 38, 38, 1);
+  transform: rotate(90deg);
+}
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+}
+.video-wrapper iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+.video-title {
+  margin-top: 16px;
+  text-align: center;
+  color: var(--accent-gold);
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+</style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <!-- Confetti -->
+  <div class="confetti-layer" id="confettiLayer"></div>
+
+  <!-- 3D GIFT BOX -->
+  <div class="gift-box-container" id="giftBoxContainer">
+    <div class="gift-box" id="giftBox">
+      <!-- box faces -->
+      <div class="gift-box__side gift-box__side--front"></div>
+      <div class="gift-box__side gift-box__side--back"></div>
+      <div class="gift-box__side gift-box__side--left"></div>
+      <div class="gift-box__side gift-box__side--right"></div>
+      <div class="gift-box__end gift-box__side--top"></div>
+      <div class="gift-box__end gift-box__side--bottom"></div>
+
+      <!-- lid faces -->
+      <div class="gift-box-lid__side gift-box-lid__side--front"></div>
+      <div class="gift-box-lid__side gift-box-lid__side--back"></div>
+      <div class="gift-box-lid__side gift-box-lid__side--left"></div>
+      <div class="gift-box-lid__side gift-box-lid__side--right"></div>
+      <div class="gift-box-lid__end gift-box-lid__side--top"></div>
+
+      <!-- ribbon ends -->
+      <div class="ribbon-l-end"></div>
+      <div class="ribbon-r-end"></div>
+    </div>
+  </div>
+
+  <!-- HINT -->
+  <div id="hintText" class="hint">
+    <span>
+      <span class="hint-emoji">🎁</span>
+      Double-tap the gift box to open your surprise
+    </span>
+  </div>
+
+  <!-- Birthday message -->
+  <div id="giftMessage" class="gift-message hidden">
+    <div class="gift-message-title">
+      Advance Happy Birthday, <span id="friendName" class="friend-name"></span> 🎉
+    </div>
+    <div class="gift-message-text">
+      Wish you a wonderful year filled with happiness and success. Miss you daa 💔
+    </div>
+    <div class="gift-message-text" style="margin-top:6px;">
+      This is my small gift: an analog watch just for you.
+    </div>
+  </div>
+
+  <!-- CLOCK SECTION -->
+  <div class="clock-section hidden" id="clockSection">
+    <div class="clock-title">
+      For my best friend <span id="clockFriendName" class="friend-name"></span>
+    </div>
+
+    <div class="watch-shell">
+      <div class="watch-inner">
+        <!-- markers -->
+        <div class="marker" style="transform: translateX(-50%) rotate(0deg) translateY(-5px);"></div>
+        <div class="marker" style="transform: translateX(-50%) rotate(30deg) translateY(-5px);"></div>
+        <div class="marker" style="transform: translateX(-50%) rotate(60deg) translateY(-5px);"></div>
+        <div class="marker" style="transform: translateX(-50%) rotate(90deg) translateY(-5px);"></div>
+        <div class="marker" style="transform: translateX(-50%) rotate(120deg) translateY(-5px);"></div>
+        <div class="marker" style="transform: translateX(-50%) rotate(150deg) translateY(-5px);"></div>
+        <div class="marker" style="transform: translateX(-50%) rotate(180deg) translateY(-5px);"></div>
+        <div class="marker" style="transform: translateX(-50%) rotate(210deg) translateY(-5px);"></div>
+        <div class="marker" style="transform: translateX(-50%) rotate(240deg) translateY(-5px);"></div>
+        <div class="marker" style="transform: translateX(-50%) rotate(270deg) translateY(-5px);"></div>
+        <div class="marker" style="transform: translateX(-50%) rotate(300deg) translateY(-5px);"></div>
+        <div class="marker" style="transform: translateX(-50%) rotate(330deg) translateY(-5px);"></div>
+
+        <!-- numbers -->
+        <div class="number" style="top: 14%; left: 50%; transform: translate(-50%, -50%);">12</div>
+        <div class="number" style="top: 50%; left: 84%; transform: translate(-50%, -50%);">3</div>
+        <div class="number" style="top: 86%; left: 50%; transform: translate(-50%, -50%);">6</div>
+        <div class="number" style="top: 50%; left: 16%; transform: translate(-50%, -50%);">9</div>
+
+        <!-- hands -->
+        <div id="hourHand" class="hand hand-hour"></div>
+        <div id="minuteHand" class="hand hand-minute"></div>
+        <div id="secondHand" class="hand hand-second"></div>
+
+        <div class="watch-center"></div>
+      </div>
+    </div>
+
+    <div class="digital-time" id="digitalTime">--:--:--</div>
+    <div class="digital-sub">GLASGOW · UNITED KINGDOM</div>
+
+    <div class="action-buttons">
+      <button id="replayBtn" class="action-btn btn-replay hidden">🔁 Replay surprise</button>
+      <button id="videoBtn" class="action-btn btn-video hidden">🎬 Play birthday video</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLOCK TICK SOUND -->
+<audio id="tickSound" preload="auto" loop>
+  <source src="https://cdn.freesound.org/previews/320/320655_5260872-lq.mp3" type="audio/mpeg">
+</audio>
+
+<!-- BIRTHDAY VIDEO MODAL -->
+<div id="videoModal" class="video-modal hidden">
+  <div class="video-modal-overlay"></div>
+  <div class="video-modal-content">
+    <button id="closeVideoBtn" class="close-video-btn">✕</button>
+    <div class="video-wrapper">
+      <iframe id="videoFrame"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
+    <div class="video-title">🎂 Special Birthday Message for You!</div>
+  </div>
+</div>
+
+<script>
+// ========== CONFIG ==========
+const FRIEND_NAME = "Ahamed Safrose";
+
+const BIRTHDAY_CONFIG = {
+  // just for reference, not used in logic now
+  month: 11,
+  day: 26,
+  // 🔴 CHANGE THIS TO YOUR REAL VIDEO LINK
+  // YouTube: https://www.youtube.com/embed/VIDEO_ID
+  // Drive  : https://drive.google.com/file/d/FILE_ID/preview
+  videoLink: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+};
+
+// elements
+const giftBox   = document.getElementById('giftBox');
+const container = document.getElementById('giftBoxContainer');
+const confettiLayer = document.getElementById('confettiLayer');
+const clockSection  = document.getElementById('clockSection');
+const tickAudio     = document.getElementById('tickSound');
+const hintText      = document.getElementById('hintText');
+
+const hourHand      = document.getElementById('hourHand');
+const minuteHand    = document.getElementById('minuteHand');
+const secondHand    = document.getElementById('secondHand');
+const digitalTimeEl = document.getElementById('digitalTime');
+
+const friendNameSpan   = document.getElementById('friendName');
+const clockFriendName  = document.getElementById('clockFriendName');
+const replayBtn        = document.getElementById('replayBtn');
+const videoBtn         = document.getElementById('videoBtn');
+
+const videoModal   = document.getElementById('videoModal');
+const videoFrame   = document.getElementById('videoFrame');
+const closeVideoBtn= document.getElementById('closeVideoBtn');
+
+// set friend name
+friendNameSpan.textContent  = FRIEND_NAME;
+clockFriendName.textContent = FRIEND_NAME;
+
+// build ribbons dynamically
+const edgeColor = getComputedStyle(giftBox).getPropertyValue('--gift-box-edge-color') || '#590b11';
+for (let i = 0; i <= 40; i++) {
+  const left = document.createElement('div');
+  left.className = 'ribbon-l';
+  left.style.setProperty('--gift-box-position', i + 'px');
+  if (i < 3 || i > 37) left.style.borderColor = edgeColor;
+  giftBox.appendChild(left);
+
+  const right = document.createElement('div');
+  right.className = 'ribbon-r';
+  right.style.setProperty('--gift-box-position', i + 'px');
+  if (i < 3 || i > 37) right.style.borderColor = edgeColor;
+  giftBox.appendChild(right);
+}
+
+// ========== CONFETTI ==========
+function spawnConfetti() {
+  confettiLayer.innerHTML = '';
+  const colors = ['#f97316', '#22c55e', '#38bdf8', '#eab308', '#f97373', '#a855f7'];
+
+  for (let i = 0; i < 90; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = (Math.random() * 0.6) + 's';
+    piece.style.transform = `translate3d(0, -120%, 0) rotateZ(${Math.random() * 360}deg)`;
+    confettiLayer.appendChild(piece);
+  }
+}
+
+// ========== MAIN GIFT SEQUENCE ==========
+const MESSAGE_DURATION_MS = 10000; // 10s
+let isRunning = false;
+let lastTap = 0;
+
+// double-tap detection (also work with mouse double-click)
+container.addEventListener('click', () => {
+  const now = Date.now();
+  if (now - lastTap < 400) {
+    startSequence();
+  }
+  lastTap = now;
+});
+container.addEventListener('dblclick', startSequence);
+
+function startSequence() {
+  if (isRunning) return;
+  isRunning = true;
+
+  hintText.classList.add('hidden');
+
+  if (navigator.vibrate) {
+    navigator.vibrate([80, 40, 80]);
+  }
+
+  // spin
+  container.classList.add('spin');
+
+  setTimeout(() => {
+    // open lid
+    container.classList.add('open');
+    spawnConfetti();
+
+    const giftMessage = document.getElementById('giftMessage');
+    giftMessage.classList.remove('hidden');
+    requestAnimationFrame(() => giftMessage.classList.add('show'));
+
+    setTimeout(() => {
+      // hide message
+      giftMessage.classList.remove('show');
+
+      setTimeout(() => {
+        // play ticking sound just before clock
+        if (tickAudio) {
+          tickAudio.currentTime = 0;
+          tickAudio.volume = 0.35;
+          tickAudio.play().catch(() => {});
+        }
+
+        container.classList.add('blast');
+
+        setTimeout(() => {
+          container.classList.add('hidden');
+          giftMessage.classList.add('hidden');
+          showClock();
+        }, 900);
+      }, 600);
+    }, MESSAGE_DURATION_MS);
+  }, 5000); // spin 5s
+}
+
+function showClock() {
+  clockSection.classList.remove('hidden');
+  requestAnimationFrame(() => clockSection.classList.add('show'));
+  replayBtn.classList.remove('hidden');
+  videoBtn.classList.remove('hidden');
+}
+
+// ========== GLASGOW CLOCK ==========
+const TIMEZONE = 'Europe/London';
+
+function getGlasgowTimeParts() {
+  const formatter = new Intl.DateTimeFormat('en-GB', {
+    timeZone: TIMEZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+  const parts = formatter.formatToParts(new Date());
+  let hour, minute, second;
+  for (const p of parts) {
+    if (p.type === 'hour')   hour   = parseInt(p.value, 10);
+    if (p.type === 'minute') minute = parseInt(p.value, 10);
+    if (p.type === 'second') second = parseInt(p.value, 10);
+  }
+  return { hour, minute, second };
+}
+function pad(n) { return n.toString().padStart(2, '0'); }
+
+function updateClock() {
+  const t = getGlasgowTimeParts();
+  if (t.hour == null) return;
+
+  const secDeg  = t.second * 6;
+  const minDeg  = (t.minute + t.second / 60) * 6;
+  const hourDeg = ((t.hour % 12) + t.minute / 60) * 30;
+
+  secondHand.style.transform = `translateX(-50%) rotate(${secDeg}deg)`;
+  minuteHand.style.transform = `translateX(-50%) rotate(${minDeg}deg)`;
+  hourHand.style.transform   = `translateX(-50%) rotate(${hourDeg}deg)`;
+
+  digitalTimeEl.textContent =
+    `${pad(t.hour)}:${pad(t.minute)}:${pad(t.second)}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ========== VIDEO MODAL ==========
+function openVideoModal() {
+  videoFrame.src = BIRTHDAY_CONFIG.videoLink;
+  videoModal.classList.remove('hidden');
+  spawnConfetti();
+  if (navigator.vibrate) {
+    navigator.vibrate([200, 100, 200]);
+  }
+}
+function closeVideoModal() {
+  videoModal.classList.add('hidden');
+  videoFrame.src = '';
+}
+videoBtn.addEventListener('click', openVideoModal);
+closeVideoBtn.addEventListener('click', closeVideoModal);
+videoModal.querySelector('.video-modal-overlay')
+  .addEventListener('click', closeVideoModal);
+
+// ========== REPLAY ==========
+replayBtn.addEventListener('click', () => {
+  // easiest clean reset
+  location.reload();
+});
+
+// ========== TICK SOUND SAFETY (mobile autoplay) ==========
+document.addEventListener('touchstart', () => {
+  if (clockSection.classList.contains('show') && tickAudio.paused) {
+    tickAudio.play().catch(() => {});
+  }
+}, { once: true });
+</script>
+</body>
+</html>
